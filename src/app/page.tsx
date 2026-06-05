@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ accountDeleted?: string }>;
+}) {
+  const { accountDeleted } = await searchParams;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -13,6 +19,13 @@ export default async function Home() {
       <p className="mt-3 text-lg text-zinc-600">
         A one-page professional profile. Minimal, text-first, yours to edit.
       </p>
+
+      {accountDeleted && (
+        <div className="mt-6 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          Your account has been deleted.
+        </div>
+      )}
+
       <div className="mt-8 flex gap-4 text-sm">
         {user ? (
           <Link

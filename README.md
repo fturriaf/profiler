@@ -84,6 +84,7 @@ Add three project env vars in **Vercel → Project → Settings → Environment 
 | ------------------------------- | ------------------------------------------ |
 | `NEXT_PUBLIC_SUPABASE_URL`      | Your Supabase project URL                  |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase `anon` public key            |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase `service_role` key (server-only; needed for account deletion) |
 | `NEXT_PUBLIC_SITE_URL`          | `https://your-domain.vercel.app` (or custom) |
 
 Apply to **Production**, **Preview**, and **Development** as you like.

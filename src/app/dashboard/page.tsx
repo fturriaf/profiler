@@ -3,9 +3,23 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { fetchOwnProfile } from "@/lib/profile/queries";
 import { logoutAction } from "../login/actions";
-import { togglePublishAction } from "./actions";
+import {
+  deleteAccountAction,
+  togglePublishAction,
+  updateUsernameAction,
+} from "./actions";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    usernameError?: string;
+    usernameOk?: string;
+    deleteError?: string;
+  }>;
+}) {
+  const { usernameError, usernameOk, deleteError } = await searchParams;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -19,7 +33,7 @@ export default async function DashboardPage() {
   const itemCount = profile.sections.reduce((n, s) => n + s.items.length, 0);
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-6 py-16">
+    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-6 py-16">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
         <form action={logoutAction}>
@@ -32,11 +46,12 @@ export default async function DashboardPage() {
         </form>
       </header>
 
-      <p className="mt-6 text-sm text-zinc-600">
+      <p className="text-sm text-zinc-600">
         Signed in as <span className="font-medium">{user.email}</span>.
       </p>
 
-      <section className="mt-10 rounded-lg border border-zinc-200 p-5">
+      {/* Profile card */}
+      <section className="rounded-lg border border-zinc-200 p-5">
         <div className="flex items-baseline justify-between">
           <div>
             <h2 className="text-lg font-medium">{profile.display_name}</h2>
@@ -90,6 +105,83 @@ export default async function DashboardPage() {
           <p className="mt-4 text-xs text-zinc-500">
             Your profile is a draft and only visible to you. Publish when ready.
           </p>
+        )}
+      </section>
+
+      {/* Account settings card — username change */}
+      <section className="rounded-lg border border-zinc-200 p-5">
+        <h2 className="text-base font-medium">Account settings</h2>
+        <p className="mt-1 text-xs text-zinc-500">
+          Your public profile lives at{" "}
+          <code className="rounded bg-zinc-100 px-1">
+            /u/{profile.username}
+          </code>
+          . Changing your username changes that URL — any links to the old one
+          will 404.
+        </p>
+
+        <form
+          action={updateUsernameAction}
+          className="mt-4 flex flex-wrap items-end gap-2"
+        >
+          <label className="flex flex-1 flex-col gap-1 text-sm">
+            Username
+            <input
+              name="username"
+              defaultValue={profile.username}
+              required
+              pattern="[a-z0-9_\-]{2,32}"
+              className="rounded-md border border-zinc-300 px-3 py-2 lowercase"
+            />
+          </label>
+          <button
+            type="submit"
+            className="rounded-md bg-zinc-900 px-3 py-2 text-sm text-white hover:bg-zinc-800"
+          >
+            Save username
+          </button>
+        </form>
+
+        {usernameError && (
+          <p className="mt-2 text-sm text-red-600">{usernameError}</p>
+        )}
+        {usernameOk && (
+          <p className="mt-2 text-sm text-emerald-700">Username updated.</p>
+        )}
+      </section>
+
+      {/* Danger zone — delete account */}
+      <section className="rounded-lg border border-red-200 bg-red-50/40 p-5">
+        <h2 className="text-base font-medium text-red-900">Danger zone</h2>
+        <p className="mt-1 text-sm text-red-800">
+          Deleting your account is permanent. Your profile, sections, and items
+          will all be removed and your public page will 404.
+        </p>
+
+        <form
+          action={deleteAccountAction}
+          className="mt-4 flex flex-wrap items-end gap-2"
+        >
+          <label className="flex flex-1 flex-col gap-1 text-sm text-red-900">
+            Type your username{" "}
+            <code className="font-mono">{profile.username}</code> to confirm
+            <input
+              name="confirm"
+              required
+              placeholder={profile.username}
+              className="rounded-md border border-red-300 bg-white px-3 py-2 lowercase"
+            />
+          </label>
+          <button
+            type="submit"
+            className="rounded-md bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700"
+          >
+            Delete account
+          </button>
+        </form>
+
+        {deleteError && (
+          <p className="mt-2 text-sm text-red-700">{deleteError}</p>
         )}
       </section>
     </main>
