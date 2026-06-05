@@ -1,4 +1,5 @@
 import type { ProfileFull } from "@/lib/profile/types";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { SectionRenderer } from "./SectionRenderer";
 
 export function ProfileView({ profile }: { profile: ProfileFull }) {
@@ -20,6 +21,23 @@ export function ProfileView({ profile }: { profile: ProfileFull }) {
       ) : (
         profile.sections.map((s) => <SectionRenderer key={s.id} section={s} />)
       )}
+
+      <footer className="mt-16 border-t border-zinc-100 pt-4 text-xs text-zinc-400">
+        Made with{" "}
+        <a
+          href={SITE_URL}
+          className="underline decoration-zinc-300 underline-offset-2 hover:text-zinc-600"
+        >
+          {SITE_NAME}
+        </a>
+        {" · "}
+        <a
+          href={`${SITE_URL}/signup`}
+          className="underline decoration-zinc-300 underline-offset-2 hover:text-zinc-600"
+        >
+          make your own
+        </a>
+      </footer>
     </article>
   );
 }
