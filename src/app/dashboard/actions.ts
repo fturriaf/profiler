@@ -70,6 +70,57 @@ export async function updateUsernameAction(formData: FormData) {
   redirect(`/dashboard?usernameOk=1`);
 }
 
+export async function updatePasswordAction(formData: FormData) {
+  const current = String(formData.get("current") ?? "");
+  const next = String(formData.get("next") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+
+  if (next.length < 6) {
+    redirect(
+      `/dashboard?passwordError=${encodeURIComponent(
+        "New password must be at least 6 characters.",
+      )}`,
+    );
+  }
+  if (next !== confirm) {
+    redirect(
+      `/dashboard?passwordError=${encodeURIComponent(
+        "New passwords do not match.",
+      )}`,
+    );
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user || !user.email) redirect("/login");
+
+  // Verify the current password before allowing a change. Supabase's
+  // updateUser does not require this by default, but checking guards against
+  // session-hijack-style abuse (e.g. someone using an unlocked browser).
+  const { error: reauthError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: current,
+  });
+  if (reauthError) {
+    redirect(
+      `/dashboard?passwordError=${encodeURIComponent(
+        "Current password is incorrect.",
+      )}`,
+    );
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: next });
+  if (error) {
+    redirect(
+      `/dashboard?passwordError=${encodeURIComponent(error.message)}`,
+    );
+  }
+
+  redirect("/dashboard?passwordOk=1");
+}
+
 export async function deleteAccountAction(formData: FormData) {
   const confirmInput = String(formData.get("confirm") ?? "")
     .trim()

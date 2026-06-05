@@ -6,6 +6,7 @@ import { logoutAction } from "../login/actions";
 import {
   deleteAccountAction,
   togglePublishAction,
+  updatePasswordAction,
   updateUsernameAction,
 } from "./actions";
 
@@ -15,10 +16,18 @@ export default async function DashboardPage({
   searchParams: Promise<{
     usernameError?: string;
     usernameOk?: string;
+    passwordError?: string;
+    passwordOk?: string;
     deleteError?: string;
   }>;
 }) {
-  const { usernameError, usernameOk, deleteError } = await searchParams;
+  const {
+    usernameError,
+    usernameOk,
+    passwordError,
+    passwordOk,
+    deleteError,
+  } = await searchParams;
 
   const supabase = await createClient();
   const {
@@ -112,7 +121,13 @@ export default async function DashboardPage({
           nested actions left a flash message in the URL. */}
       <details
         className="group rounded-lg border border-zinc-200 [&_summary::-webkit-details-marker]:hidden"
-        open={Boolean(usernameError || usernameOk || deleteError)}
+        open={Boolean(
+          usernameError ||
+            usernameOk ||
+            passwordError ||
+            passwordOk ||
+            deleteError,
+        )}
       >
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-3 text-sm font-medium text-zinc-700 hover:bg-zinc-50">
           <span>Account management</span>
@@ -125,9 +140,9 @@ export default async function DashboardPage({
         </summary>
 
         <div className="flex flex-col gap-6 border-t border-zinc-100 px-5 pb-5 pt-5">
-          {/* Account settings — username change */}
+          {/* Change username */}
           <div>
-            <h3 className="text-sm font-medium">Account settings</h3>
+            <h3 className="text-sm font-medium">Change username</h3>
             <p className="mt-1 text-xs text-zinc-500">
               Your public profile lives at{" "}
               <code className="rounded bg-zinc-100 px-1">
@@ -155,7 +170,7 @@ export default async function DashboardPage({
                 type="submit"
                 className="rounded-md bg-zinc-900 px-3 py-2 text-sm text-white hover:bg-zinc-800"
               >
-                Save username
+                Change username
               </button>
             </form>
 
@@ -164,6 +179,69 @@ export default async function DashboardPage({
             )}
             {usernameOk && (
               <p className="mt-2 text-sm text-emerald-700">Username updated.</p>
+            )}
+          </div>
+
+          {/* Change password */}
+          <div>
+            <h3 className="text-sm font-medium">Change password</h3>
+            <p className="mt-1 text-xs text-zinc-500">
+              You&rsquo;ll be asked for your current password to confirm.
+            </p>
+
+            <form
+              action={updatePasswordAction}
+              className="mt-3 flex flex-col gap-2"
+            >
+              <label className="flex flex-col gap-1 text-sm">
+                Current password
+                <input
+                  name="current"
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                  className="rounded-md border border-zinc-300 px-3 py-2"
+                />
+              </label>
+              <div className="flex flex-wrap gap-2">
+                <label className="flex flex-1 flex-col gap-1 text-sm">
+                  New password
+                  <input
+                    name="next"
+                    type="password"
+                    required
+                    autoComplete="new-password"
+                    minLength={6}
+                    className="rounded-md border border-zinc-300 px-3 py-2"
+                  />
+                </label>
+                <label className="flex flex-1 flex-col gap-1 text-sm">
+                  Confirm new password
+                  <input
+                    name="confirm"
+                    type="password"
+                    required
+                    autoComplete="new-password"
+                    minLength={6}
+                    className="rounded-md border border-zinc-300 px-3 py-2"
+                  />
+                </label>
+              </div>
+              <button
+                type="submit"
+                className="mt-1 self-start rounded-md bg-zinc-900 px-3 py-2 text-sm text-white hover:bg-zinc-800"
+              >
+                Change password
+              </button>
+            </form>
+
+            {passwordError && (
+              <p className="mt-2 text-sm text-red-600">{passwordError}</p>
+            )}
+            {passwordOk && (
+              <p className="mt-2 text-sm text-emerald-700">
+                Password updated.
+              </p>
             )}
           </div>
 
