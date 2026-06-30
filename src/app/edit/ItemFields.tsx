@@ -7,6 +7,7 @@ import type {
   LinkContent,
   ParagraphContent,
   SectionKind,
+  WorkContent,
 } from "@/lib/profile/types";
 
 const inputCls =
@@ -88,6 +89,43 @@ export function ItemFields({
         </div>
       );
     }
+    case "work": {
+      const c = content as WorkContent;
+      return (
+        <div className="grid grid-cols-2 gap-2">
+          <input
+            className={inputCls}
+            value={c.employer}
+            placeholder="Employer"
+            onChange={(e) => onChange({ ...c, employer: e.target.value })}
+          />
+          <input
+            className={inputCls}
+            value={c.employer_url ?? ""}
+            placeholder="Employer URL (optional)"
+            onChange={(e) => onChange({ ...c, employer_url: e.target.value })}
+          />
+          <input
+            className={inputCls}
+            value={c.years}
+            placeholder="Years (e.g. 2018–2022)"
+            onChange={(e) => onChange({ ...c, years: e.target.value })}
+          />
+          <input
+            className={inputCls}
+            value={c.role}
+            placeholder="Role / position"
+            onChange={(e) => onChange({ ...c, role: e.target.value })}
+          />
+          <input
+            className={`${inputCls} col-span-2`}
+            value={c.note ?? ""}
+            placeholder="Note (optional, shown under role in lighter font)"
+            onChange={(e) => onChange({ ...c, note: e.target.value })}
+          />
+        </div>
+      );
+    }
   }
 }
 
@@ -100,5 +138,7 @@ export function blankContent(kind: SectionKind): ItemContent {
       return { label: "", url: "" };
     case "key_value":
       return { key: "", value: "" };
+    case "work":
+      return { employer: "", years: "", role: "" };
   }
 }

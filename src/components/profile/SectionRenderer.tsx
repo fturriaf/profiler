@@ -4,6 +4,7 @@ import type {
   LinkContent,
   ParagraphContent,
   SectionWithItems,
+  WorkContent,
 } from "@/lib/profile/types";
 
 export function SectionRenderer({ section }: { section: SectionWithItems }) {
@@ -80,6 +81,41 @@ function renderBody(section: SectionWithItems) {
             );
           })}
         </dl>
+      );
+    case "work":
+      return (
+        <div className="grid grid-cols-[max-content_max-content_1fr] gap-x-6 gap-y-3">
+          {section.items.map((it) => {
+            const c = it.content as WorkContent;
+            return (
+              <div key={it.id} className="contents">
+                <div className="text-zinc-900">
+                  {c.employer_url ? (
+                    <a
+                      href={c.employer_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline decoration-zinc-300 underline-offset-2 hover:decoration-zinc-900"
+                    >
+                      {c.employer}
+                    </a>
+                  ) : (
+                    c.employer
+                  )}
+                </div>
+                <div className="text-zinc-500">{c.years}</div>
+                <div>
+                  <div>{c.role}</div>
+                  {c.note ? (
+                    <div className="mt-0.5 text-sm italic text-zinc-500">
+                      {c.note}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       );
   }
 }

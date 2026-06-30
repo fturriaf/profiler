@@ -1,4 +1,9 @@
-export type SectionKind = "bullets" | "paragraphs" | "links" | "key_value";
+export type SectionKind =
+  | "bullets"
+  | "paragraphs"
+  | "links"
+  | "key_value"
+  | "work";
 
 export type Profile = {
   id: string;
@@ -23,12 +28,20 @@ export type BulletContent = { text: string };
 export type ParagraphContent = { text: string };
 export type LinkContent = { label: string; url: string; note?: string };
 export type KeyValueContent = { key: string; value: string };
+export type WorkContent = {
+  employer: string;
+  employer_url?: string;
+  years: string;
+  role: string;
+  note?: string;
+};
 
 export type ItemContent =
   | BulletContent
   | ParagraphContent
   | LinkContent
-  | KeyValueContent;
+  | KeyValueContent
+  | WorkContent;
 
 export type Item = {
   id: string;
@@ -46,4 +59,5 @@ export const SECTION_KIND_LABELS: Record<SectionKind, string> = {
   paragraphs: "Paragraphs",
   links: "Links",
   key_value: "Key / value",
+  work: "Work history",
 };
