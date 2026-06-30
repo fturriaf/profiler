@@ -30,7 +30,7 @@ function renderBody(section: SectionWithItems) {
             return (
               <li key={it.id} className="flex gap-2">
                 <span aria-hidden className="text-zinc-400">·</span>
-                <span>{c.text}</span>
+                <span className="break-words">{c.text}</span>
               </li>
             );
           })}
@@ -41,7 +41,11 @@ function renderBody(section: SectionWithItems) {
         <div className="space-y-3">
           {section.items.map((it) => {
             const c = it.content as ParagraphContent;
-            return <p key={it.id}>{c.text}</p>;
+            return (
+              <p key={it.id} className="break-words">
+                {c.text}
+              </p>
+            );
           })}
         </div>
       );
@@ -51,7 +55,7 @@ function renderBody(section: SectionWithItems) {
           {section.items.map((it) => {
             const c = it.content as LinkContent;
             return (
-              <li key={it.id}>
+              <li key={it.id} className="break-words">
                 <a
                   href={c.url}
                   target="_blank"
@@ -69,27 +73,32 @@ function renderBody(section: SectionWithItems) {
         </ul>
       );
     case "key_value":
+      // Mobile: each item is a stacked block (key above value).
+      // ≥ sm: switch to a 2-column grid using `display: contents` on the
+      // per-item wrapper so children flow into the parent grid.
       return (
-        <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-0.5">
+        <div className="flex flex-col gap-2 sm:grid sm:grid-cols-[max-content_1fr] sm:gap-x-6 sm:gap-y-0.5">
           {section.items.map((it) => {
             const c = it.content as KeyValueContent;
             return (
-              <div key={it.id} className="contents">
-                <dt className="text-zinc-500">{c.key}</dt>
-                <dd>{c.value}</dd>
+              <div key={it.id} className="sm:contents">
+                <div className="text-zinc-500">{c.key}</div>
+                <div className="break-words">{c.value}</div>
               </div>
             );
           })}
-        </dl>
+        </div>
       );
     case "work":
+      // Mobile: each position is a stacked card (employer / years / role / note).
+      // ≥ sm: 3-column grid for desktop hierarchy.
       return (
-        <div className="grid grid-cols-[max-content_max-content_1fr] gap-x-6 gap-y-3">
+        <div className="flex flex-col gap-4 sm:grid sm:grid-cols-[max-content_max-content_1fr] sm:gap-x-6 sm:gap-y-3">
           {section.items.map((it) => {
             const c = it.content as WorkContent;
             return (
-              <div key={it.id} className="contents">
-                <div className="text-zinc-900">
+              <div key={it.id} className="sm:contents">
+                <div className="font-medium text-zinc-900 break-words sm:font-normal">
                   {c.employer_url ? (
                     <a
                       href={c.employer_url}
@@ -103,8 +112,10 @@ function renderBody(section: SectionWithItems) {
                     c.employer
                   )}
                 </div>
-                <div className="text-zinc-500">{c.years}</div>
-                <div>
+                <div className="text-sm text-zinc-500 sm:text-[15px]">
+                  {c.years}
+                </div>
+                <div className="break-words">
                   <div>{c.role}</div>
                   {c.note ? (
                     <div className="mt-0.5 text-sm italic text-zinc-500">
