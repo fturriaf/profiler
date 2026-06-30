@@ -1,6 +1,6 @@
 # Profiler
 
-Minimalist, professional one-page profiles. Inspired by sites like
+Minimalist one-page profiles. Inspired by sites like
 [fredkrueger.org](https://fredkrueger.org/) — text-first, no social-network
 clutter, one URL you can put on a business card.
 

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     default: SITE_NAME,
     template: `%s · ${SITE_NAME}`,
   },
-  description: "Minimalist, professional one-page profiles.",
+  description: "Minimalist one-page profiles.",
 };
 
 export default function RootLayout({

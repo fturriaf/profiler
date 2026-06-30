@@ -17,7 +17,7 @@ export default async function Home({
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-4 py-16 sm:px-6 sm:py-24">
       <h1 className="text-4xl font-semibold tracking-tight">Profiler</h1>
       <p className="mt-3 text-lg text-zinc-600">
-        A one-page professional profile.
+        A one-page profile.
         <br />
         Minimal, secure, text-first, yours to edit.
       </p>
