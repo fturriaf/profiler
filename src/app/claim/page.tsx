@@ -27,7 +27,8 @@ export default async function ClaimPage({
       <p className="mt-2 text-sm text-zinc-600">
         Your public page will live at{" "}
         <code className="rounded bg-zinc-100 px-1 py-0.5">/u/your-username</code>
-        .
+        . We&rsquo;ll pre-fill a few example sections so you have something to
+        edit instead of starting from a blank page.
       </p>
 
       <form action={claimUsernameAction} className="mt-6 flex flex-col gap-3">

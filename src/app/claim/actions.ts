@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { seedStarterContent } from "@/lib/profile/starter";
 
 const USERNAME_RE = /^[a-z0-9_-]{2,32}$/;
 
@@ -40,6 +41,11 @@ export async function claimUsernameAction(formData: FormData) {
         : error.message;
     redirect(`/claim?error=${encodeURIComponent(msg)}`);
   }
+
+  // Pre-populate the new profile with a starter template so the user lands
+  // on something editable instead of an empty page. Best-effort: a partial
+  // seed is preferable to blocking account creation.
+  await seedStarterContent(supabase, user.id);
 
   redirect("/dashboard");
 }
