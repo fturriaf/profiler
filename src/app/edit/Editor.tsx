@@ -213,44 +213,52 @@ export default function Editor({ profile }: { profile: ProfileFull }) {
   const previewProfile = toPreviewProfile(profile, state);
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-8 px-6 py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-      {/* Editor pane */}
-      <div className="flex flex-col gap-6">
-        <header className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Edit profile
-            </h1>
-            <p className="text-sm text-zinc-500">
-              <Link href="/dashboard" className="underline">
-                ← back to dashboard
-              </Link>
-              {" · "}
-              <Link href={`/u/${profile.username}`} className="underline">
-                view public page
-              </Link>
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            {dirty && (
-              <span className="text-xs text-amber-600">unsaved changes</span>
-            )}
-            <button
-              type="button"
-              onClick={save}
-              disabled={!dirty || isSaving}
-              className="rounded-md bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {isSaving ? "Saving…" : "Save"}
-            </button>
-          </div>
-        </header>
+    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+      {/* Sticky top bar — Save stays reachable while scrolling on mobile */}
+      <div className="sticky top-0 z-10 -mx-4 flex items-center justify-between gap-3 border-b border-zinc-100 bg-white/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+        <div className="min-w-0">
+          <h1 className="text-lg font-semibold tracking-tight sm:text-2xl">
+            Edit profile
+          </h1>
+          <p className="truncate text-xs text-zinc-500 sm:text-sm">
+            <Link href="/dashboard" className="underline">
+              ← dashboard
+            </Link>
+            <span className="mx-2 text-zinc-300">·</span>
+            <Link href={`/u/${profile.username}`} className="underline">
+              public page
+            </Link>
+            <span className="mx-2 text-zinc-300 lg:hidden">·</span>
+            <a href="#preview" className="underline lg:hidden">
+              preview ↓
+            </a>
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {dirty && (
+            <span className="hidden text-xs text-amber-600 sm:inline">
+              unsaved
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={save}
+            disabled={!dirty || isSaving}
+            className="rounded-md bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSaving ? "Saving…" : dirty ? "Save" : "Saved"}
+          </button>
+        </div>
+      </div>
 
-        {error && (
-          <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-            {error}
-          </div>
-        )}
+      <div className="grid gap-6 py-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-8 lg:py-10">
+        {/* Editor pane */}
+        <div className="flex min-w-0 flex-col gap-6">
+          {error && (
+            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
 
         {/* Profile basics */}
         <fieldset className="rounded-lg border border-zinc-200 p-4">
@@ -324,21 +332,21 @@ export default function Editor({ profile }: { profile: ProfileFull }) {
                 {sec.items.map((it, j) => (
                   <li
                     key={it.clientId}
-                    className="flex items-start gap-2 rounded-md border border-zinc-100 bg-zinc-50/50 p-2"
+                    className="flex flex-col gap-2 rounded-md border border-zinc-100 bg-zinc-50/50 p-2 sm:flex-row sm:items-start"
                   >
-                    <div className="flex-1">
+                    <div className="min-w-0 flex-1">
                       <ItemFields
                         kind={sec.kind}
                         content={it.content}
                         onChange={(c) => patchItem(i, j, c)}
                       />
                     </div>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex gap-1 sm:flex-col">
                       <button
                         type="button"
                         onClick={() => moveItem(i, j, -1)}
                         disabled={j === 0}
-                        className="rounded border border-zinc-200 px-1.5 text-xs text-zinc-600 hover:bg-zinc-100 disabled:opacity-30"
+                        className="rounded border border-zinc-200 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-100 disabled:opacity-30"
                         title="Move up"
                       >
                         ↑
@@ -347,7 +355,7 @@ export default function Editor({ profile }: { profile: ProfileFull }) {
                         type="button"
                         onClick={() => moveItem(i, j, 1)}
                         disabled={j === sec.items.length - 1}
-                        className="rounded border border-zinc-200 px-1.5 text-xs text-zinc-600 hover:bg-zinc-100 disabled:opacity-30"
+                        className="rounded border border-zinc-200 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-100 disabled:opacity-30"
                         title="Move down"
                       >
                         ↓
@@ -355,7 +363,7 @@ export default function Editor({ profile }: { profile: ProfileFull }) {
                       <button
                         type="button"
                         onClick={() => removeItem(i, j)}
-                        className="rounded border border-zinc-200 px-1.5 text-xs text-red-600 hover:bg-red-50"
+                        className="ml-auto rounded border border-zinc-200 px-2 py-1 text-xs text-red-600 hover:bg-red-50 sm:ml-0"
                         title="Delete item"
                       >
                         ×
@@ -407,25 +415,29 @@ export default function Editor({ profile }: { profile: ProfileFull }) {
           >
             + Add section
           </button>
+          </div>
         </div>
-      </div>
 
-      {/* Preview pane */}
-      <aside className="lg:sticky lg:top-6 lg:self-start">
-        <div className="rounded-lg border border-zinc-200 bg-white shadow-sm">
-          <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-2">
-            <span className="text-xs uppercase tracking-widest text-zinc-500">
-              Preview
-            </span>
-            <span className="text-xs text-zinc-400">
-              {profile.published ? "live" : "draft"}
-            </span>
+        {/* Preview pane */}
+        <aside
+          id="preview"
+          className="min-w-0 lg:sticky lg:top-20 lg:self-start"
+        >
+          <div className="rounded-lg border border-zinc-200 bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-2">
+              <span className="text-xs uppercase tracking-widest text-zinc-500">
+                Preview
+              </span>
+              <span className="text-xs text-zinc-400">
+                {profile.published ? "live" : "draft"}
+              </span>
+            </div>
+            <div className="overflow-auto lg:max-h-[calc(100vh-8rem)]">
+              <ProfileView profile={previewProfile} />
+            </div>
           </div>
-          <div className="max-h-[calc(100vh-8rem)] overflow-auto">
-            <ProfileView profile={previewProfile} />
-          </div>
-        </div>
-      </aside>
+        </aside>
+      </div>
     </div>
   );
 }

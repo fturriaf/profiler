@@ -42,7 +42,7 @@ export default async function DashboardPage({
   const itemCount = profile.sections.reduce((n, s) => n + s.items.length, 0);
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-6 py-16">
+    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-16">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
         <form action={logoutAction}>
@@ -203,7 +203,7 @@ export default async function DashboardPage({
                   className="rounded-md border border-zinc-300 px-3 py-2"
                 />
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row">
                 <label className="flex flex-1 flex-col gap-1 text-sm">
                   New password
                   <input

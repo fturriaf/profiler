@@ -48,7 +48,7 @@ export function ItemFields({
     case "links": {
       const c = content as LinkContent;
       return (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <input
             className={inputCls}
             value={c.label}
@@ -62,7 +62,7 @@ export function ItemFields({
             onChange={(e) => onChange({ ...c, url: e.target.value })}
           />
           <input
-            className={`${inputCls} col-span-2`}
+            className={`${inputCls} sm:col-span-2`}
             value={c.note ?? ""}
             placeholder="Note (optional)"
             onChange={(e) => onChange({ ...c, note: e.target.value })}
@@ -73,7 +73,7 @@ export function ItemFields({
     case "key_value": {
       const c = content as KeyValueContent;
       return (
-        <div className="grid grid-cols-[max-content_1fr] gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-[max-content_1fr]">
           <input
             className={inputCls}
             value={c.key}
@@ -92,7 +92,7 @@ export function ItemFields({
     case "work": {
       const c = content as WorkContent;
       return (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <input
             className={inputCls}
             value={c.employer}
@@ -118,7 +118,7 @@ export function ItemFields({
             onChange={(e) => onChange({ ...c, role: e.target.value })}
           />
           <input
-            className={`${inputCls} col-span-2`}
+            className={`${inputCls} sm:col-span-2`}
             value={c.note ?? ""}
             placeholder="Note (optional, shown under role in lighter font)"
             onChange={(e) => onChange({ ...c, note: e.target.value })}
